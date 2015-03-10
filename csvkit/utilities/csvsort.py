@@ -15,7 +15,7 @@ class CSVSort(CSVKitUtility):
         self.argparser.add_argument('-n', '--names', dest='names_only', action='store_true',
             help='Display column names and indices from the input CSV and exit.')
         self.argparser.add_argument('-c', '--columns', dest='columns',
-            help='A comma separated list of column indices or names to be extracted. Defaults to all columns.')
+            help='A comma separated list of column indices or names to sort by. Defaults to all columns.')
         self.argparser.add_argument('-r', '--reverse', dest='reverse', action='store_true',
             help='Sort in descending order.')
         self.argparser.add_argument('--no-inference', dest='no_inference', action='store_true',
@@ -44,7 +44,7 @@ class CSVSort(CSVKitUtility):
         column_ids = parse_column_identifiers(self.args.columns, tab.headers(), self.args.zero_based)
 
         rows = tab.to_rows(serialize_dates=True) 
-        sorter = lambda r: [r[c] if r[c] is not None else '' for c in column_ids]
+        sorter = lambda r: [(r[c] is not None, r[c]) for c in column_ids]
         rows.sort(key=sorter, reverse=self.args.reverse)
         
         rows.insert(0, tab.headers())

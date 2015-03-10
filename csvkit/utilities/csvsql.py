@@ -122,7 +122,7 @@ class CSVSQL(CSVKitUtility):
                     sql_table.create()
 
                 # Insert data
-                if do_insert:
+                if do_insert and csv_table.count_rows() > 0:
                     insert = sql_table.insert()
                     headers = csv_table.headers()
                     conn.execute(insert, [dict(zip(headers, row)) for row in csv_table.to_rows()])
@@ -137,9 +137,11 @@ class CSVSQL(CSVKitUtility):
                 # Execute specified SQL queries
                 queries = query.split(';')
                 rows = None
+
                 for q in queries:
                     if q:
                         rows = conn.execute(q)
+
                 # Output result of last query as CSV
                 try:
                     output = CSVKitWriter(self.output_file, **self.writer_kwargs)
